@@ -23,7 +23,7 @@ var scoperang = (scope) => {
 	}else if(scope < 0){
 		return "Оступились"
 	}else  if (scope < 5){
-		return "Повезло"
+		return "Новичок"
 	}else  if (scope < 10){
 		return "Знающий"
 	}else  if (scope < 15){
