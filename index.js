@@ -106,14 +106,31 @@ class OtherwiseController extends TelegramBaseController {
 			}
 
 
-
-
-
 		$.sendPhoto({ path: url}).then(() => {
 			$.runInlineMenu(inlineForm)
 		})
 	}
 }
 
+class PlayScopeController extends TelegramBaseController {
+
+    clear($) {
+        playscope.clear($)
+    }
+
+    stat($) {
+        playscope.stat($)
+    }
+
+    get routes() {
+        return {
+            'clearHandler': 'clear',
+            'statHandler': 'stat'
+        }
+    }
+}
+
 tg.router
+    .when(new TextCommand('/clear', 'clearHandler'), new PlayScopeController())
+    .when(new TextCommand('/stat', 'statHandler'), new PlayScopeController())
 	.otherwise(new OtherwiseController())
