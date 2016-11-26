@@ -20,7 +20,7 @@ class OtherwiseController extends TelegramBaseController {
         let array = Object.keys(cars);
         let model = array[u.randomInt(0, 13)];
         console.log(model);
-        console.log(cars[model].lenght);
+        console.log(cars[model].length);
 
         
 
@@ -51,7 +51,7 @@ class OtherwiseController extends TelegramBaseController {
             }else  if (scope < 15){
                 return "Умный"
             }else  if (scope < 20){
-                return "Мастер"as
+                return "Мастер"
             }else  if (scope < 25){
                 return "Эксперт"
             }else  if (scope < 30){
@@ -131,7 +131,7 @@ class OtherwiseController extends TelegramBaseController {
         }
 
 
-        $.sendPhoto({ path: './delorian_dmc12.jpg'}).then(() => {
+        $.sendPhoto({ path: './src/Bentley/bentley_1.jpg'}).then(() => {
             $.runInlineMenu({
                 layout: 2,
                 method: 'sendMessage',
