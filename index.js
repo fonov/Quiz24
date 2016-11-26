@@ -20,8 +20,12 @@ const u = require('./u');
 const cars = u.getImgObject();
 const cars_array = Object.keys(cars);
 
+const playscope = require('./playscope')
+
 class OtherwiseController extends TelegramBaseController {
     handle($) {
+        playscope.init($)
+
         let selected = [];
 
         let model = cars_array[u.randomInt(0, cars_array.length - 1)];
@@ -41,34 +45,11 @@ class OtherwiseController extends TelegramBaseController {
         console.log(fake1);
         console.log(fake2);
         console.log(fake3);
-
-
-        var initplayscope = () => {
-            $.getUserSession('plays').then(data => {
-                if(isNaN(data)){
-                    $.setUserSession('plays', '0')
-                }
-            })
-        }
-
-        initplayscope()
-
-        var playscope = (e, callback) => {
-
-            $.getUserSession('plays').then(data => {
-                if(!isNaN(data)){
-                    var scope = e ? parseInt(data)+5 : parseInt(data)-5
-                    $.setUserSession('plays', '%d'.format(scope))
-                    callback(scope)
-                }
-            })
-
-        }
-
+        
         var checkmark = (text, messageId) => {
             var message = '';
             var f = text == model
-            playscope(f, (scope) => {
+            playscope.set($, f, (scope) => {
                 if(f){
                     message = 'Вы угадали! Ваш рейтинг: <b>'+scope+'</b>'
                 }else {
