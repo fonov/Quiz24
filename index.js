@@ -12,8 +12,17 @@ const tg = new Telegram.Telegram('328061181:AAGql7NWJcrQ0Y81NaYLBuLqteVffD_RBVc'
     workers: 1
 })
 
+const u = require('./u');
+const cars = u.getImgObject();
+
 class OtherwiseController extends TelegramBaseController {
     handle($) {
+        let array = Object.keys(cars);
+        let model = array[u.randomInt(0, 13)];
+        console.log(model);
+        console.log(cars[model].lenght);
+
+        
 
         var scoperang = (scope) => {
             if(scope < -35){
