@@ -11,6 +11,11 @@ var getData = ($, callback) => {
 				callback(data)
 			})
 		}
+		// Пропустил условия когда сессия уже становленна
+		else {
+            callback(data)
+        }
+
 	})
 }
 
