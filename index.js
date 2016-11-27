@@ -66,6 +66,8 @@ class PlayScopeController extends TelegramBaseController {
                             tg.api.editMessageText(setmess.format(question), {
                                 chat_id: message.chat.id,
                                 message_id: message.messageId
+                            }).then(() => {
+                                require('./quiz').quiz($)
                             })
                         })
 					}
@@ -78,6 +80,8 @@ class PlayScopeController extends TelegramBaseController {
                             tg.api.editMessageText(setmess.format(question), {
                                 chat_id: message.chat.id,
                                 message_id: message.messageId
+                            }).then(() => {
+                                require('./quiz').quiz($)
                             })
                         })
 					}
@@ -90,6 +94,8 @@ class PlayScopeController extends TelegramBaseController {
                                 tg.api.editMessageText(setmess.format(question), {
                                     chat_id: message.chat.id,
                                     message_id: message.messageId
+                                }).then(() => {
+                                    require('./quiz').quiz($)
                                 })
                             })
 					}
