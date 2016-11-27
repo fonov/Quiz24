@@ -35,15 +35,19 @@ var setLatestUrls = ($, latest_urls, callback) => {
 }
 
 var setCategory = ($, category, question, callback) => {
-	$.getUserSession('params').then(data => {
-		if (!isEmpty(data)) {
+	// $.getUserSession('params').then(data => {
+	// 	if (!isEmpty(data)) {
+
+    //Как раздница есть ли у нас параметры или нет
+
+            var data = {}
 			data.category = category
 			data.question = question
 			data.latest_urls = []
 
 			$.setUserSession('params', data).then(callback)
-		}
-	})
+	// 	}
+	// })
 }
 
 /*var clear = ($) => {

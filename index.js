@@ -91,6 +91,7 @@ class PlayScopeController extends TelegramBaseController {
 	}
 
 	category($) {
+        var setmess = 'Установлена категория - %s';
 		$.runInlineMenu({
 			method: 'sendMessage',
 			params: ['Выберите категорию'],
@@ -98,19 +99,37 @@ class PlayScopeController extends TelegramBaseController {
 				{
 					text: 'Автомобили',
 					callback: (callbackQuery, message) => {
-						store.setCategory('Cars', 'Угадайте марку машины')
+                        var question = 'Угадайте марку машины'
+						store.setCategory($, 'Cars', question, () => {
+                            tg.api.editMessageText(setmess.format(question), {
+                                chat_id: message.chat.id,
+                                message_id: message.messageId
+                            })
+                        })
 					}
 				},
 				{
 					text: 'Животные',
 					callback: (callbackQuery, message) => {
-						store.setCategory('Animals', 'Угадайте животное')
+                        var question = 'Угадайте животное'
+                        store.setCategory($, 'Animals', question, () => {
+                            tg.api.editMessageText(setmess.format(question), {
+                                chat_id: message.chat.id,
+                                message_id: message.messageId
+                            })
+                        })
 					}
 				},
 				{
 					text: 'Фильмы',
 					callback: (callbackQuery, message) => {
-						store.setCategory('Movies', 'Угадайте сцену из фильма')
+                        var question = 'Угадайте сцену из фильма';
+                            store.setCategory($, 'Movies', question, () => {
+                                tg.api.editMessageText(setmess.format(question), {
+                                    chat_id: message.chat.id,
+                                    message_id: message.messageId
+                                })
+                            })
 					}
 				}
 			]
