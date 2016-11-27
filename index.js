@@ -101,7 +101,7 @@ class PlayScopeController extends TelegramBaseController {
 					callback: (callbackQuery, message) => {
                         var question = 'Угадайте животное'
                         store.setCategory($, 'Animals', question, () => {
-                            tg.api.editMessageText(setmess.format('Животное'), {
+                            tg.api.editMessageText(setmess.format('Животные'), {
                                 chat_id: message.chat.id,
                                 message_id: message.messageId
                             }).then(() => {

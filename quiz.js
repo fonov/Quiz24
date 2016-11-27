@@ -36,9 +36,9 @@ var quiz = ($) => {
                 store.setScore($, score, () => {
                     let msg = ''
                     if (answer)
-                        msg = 'Вы угадали! Ваш рейтинг: <b>' + score + '</b>'
+                        msg = 'Вы угадали \uD83D\uDC4D! Ваш рейтинг: <b>' + score + '</b>'
                     else
-                        msg = 'Вы не угадали. Ваш рейтинг: <b>' + score + '</b>'
+                        msg = 'Вы не угадали \uD83D\uDE21. Ваш рейтинг: <b>' + score + '</b>'
 
                     msg += '\n<b>' + utils.getRankMsg(score) + '</b>'
                     tg.api.editMessageText(msg, {chat_id: $.chatId, message_id: messageId, parse_mode: 'HTML'}).then(() => {
