@@ -23,7 +23,6 @@ require('./global_extensions')
 const utils = require('./utils')
 const store = require('./store')
 
-// TODO в зависимости от выбранной категории меняем ранги
 global.ranks = {
     'Викторина явно не твоё': -25,
     'Неспособный': -20,

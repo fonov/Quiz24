@@ -5,22 +5,16 @@ function initCategories() {
 	let obj = {}
 
 	let categories = fs.readdirSync('categories')
-	// У меня откудота взялась папка .DS_Store поэтому я сейчас затру ее
-	categories.forEach((key, i, arr) => {
-		if(key == '.DS_Store'){
-			categories.splice(i, 1)
-		}
-	})
-
 	for (let i in categories) {
 		obj[categories[i]] = {}
 		// items of category
 		let items = fs.readdirSync(__dirname+'/categories/' + categories[i])
 		for (let j in items) {
 			obj[categories[i]][items[j]] = []
-
 			// files of item
 			let files = fs.readdirSync('categories/' + categories[i] + '/' + items[j])
+
+
 			for (let l in files)
 				obj[categories[i]][items[j]].push(files[l])
 		}
