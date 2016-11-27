@@ -40,19 +40,15 @@ var setLatestUrls = ($, latest_urls, callback) => {
 }
 
 var setCategory = ($, category, question, callback) => {
-	// $.getUserSession('params').then(data => {
-	// 	if (!isEmpty(data)) {
-
-    //Как раздница есть ли у нас параметры или нет
-
-            var data = {}
-			data.category = category
-			data.question = question
-			data.latest_urls = []
-
-			$.setUserSession('params', data).then(callback)
-	// 	}
-	// })
+    // Установка категории
+    // Я думаю рейтинг стоит обновлять так как для разных категорий разный рейтинг
+    var data = {
+        score: 0,
+        category: category,
+        question: question,
+        latest_urls: []
+    }
+    $.setUserSession('params', data).then(callback)
 }
 
 /*var clear = ($) => {
