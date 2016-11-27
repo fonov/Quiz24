@@ -16,7 +16,7 @@ var quiz = ($) => {
 
         //Отсылаем сообщение о том что все картинки просмотренны и не хотет ли чел попробывать себя в другой категории
         if (!items.length)
-            return $.sendMessage('<b>%s</b>, вы прошли всю категорию "%s".\nВаш ранг - %s "%s" Попробуйте другие категории /category'.format($.message.from.firstName, data.question, data.score, utils.getRankMsg(data.score)), {
+            return $.sendMessage('<b>%s</b>, вы прошли всю категорию "%s".\nВаш ранг - %s "%s".\nПопробуйте другие категории /category'.format($.message.from.firstName, data.question, data.score, utils.getRankMsg(data.score)), {
                 parse_mode: 'HTML'
             }).then(()=>{
                 // мы просмотрели все картинки в категории, очистим массив
