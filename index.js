@@ -33,6 +33,7 @@ global.ranks = {
     'Ученик': 5,
     'Студент': 10,
     'Умный': 15,
+    'Опытный': 20,
     'Просвещенный': 25,
     'Эрудит': 30,
     'Анатолий Вассерман': 35,
@@ -112,7 +113,7 @@ class PlayScopeController extends TelegramBaseController {
 				{
 					text: 'Фильмы',
 					callback: (callbackQuery, message) => {
-                        var question = 'Угадайте сцену из фильма';
+                        var question = 'Угадайте Фильм';
                             store.setCategory($, 'Movies', question, () => {
                                 tg.api.editMessageText(setmess.format(question), {
                                     chat_id: message.chat.id,

@@ -3,7 +3,7 @@ var getData = ($, callback) => {
 	$.getUserSession('params').then(data => {
 		if (isEmpty(data)) {
             var category = ['Cars', 'Animals', 'Movies']
-            var question = ['Угадайте марку машины', 'Угадайте животное', 'Угадайте сцену из фильма']
+            var question = ['Угадайте марку машины', 'Угадайте животное', 'Угадайте фильм']
             var random = Math.randomInt(0, category.length-1)
 			data.score = 0
 			data.category = category[random]
