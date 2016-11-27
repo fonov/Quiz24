@@ -87,7 +87,7 @@ class PlayScopeController extends TelegramBaseController {
 					callback: (callbackQuery, message) => {
                         var question = 'Угадайте марку машины'
 						store.setCategory($, 'Cars', question, () => {
-                            tg.api.editMessageText(setmess.format(question), {
+                            tg.api.editMessageText(setmess.format('Машины'), {
                                 chat_id: message.chat.id,
                                 message_id: message.messageId
                             }).then(() => {
@@ -101,7 +101,7 @@ class PlayScopeController extends TelegramBaseController {
 					callback: (callbackQuery, message) => {
                         var question = 'Угадайте животное'
                         store.setCategory($, 'Animals', question, () => {
-                            tg.api.editMessageText(setmess.format(question), {
+                            tg.api.editMessageText(setmess.format('Животное'), {
                                 chat_id: message.chat.id,
                                 message_id: message.messageId
                             }).then(() => {
@@ -113,9 +113,9 @@ class PlayScopeController extends TelegramBaseController {
 				{
 					text: 'Фильмы',
 					callback: (callbackQuery, message) => {
-                        var question = 'Угадайте Фильм';
+                        var question = 'Угадайте фильм';
                             store.setCategory($, 'Movies', question, () => {
-                                tg.api.editMessageText(setmess.format(question), {
+                                tg.api.editMessageText(setmess.format('Фильмы'), {
                                     chat_id: message.chat.id,
                                     message_id: message.messageId
                                 }).then(() => {
