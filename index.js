@@ -9,7 +9,7 @@ const TOKEN = '328061181:AAGql7NWJcrQ0Y81NaYLBuLqteVffD_RBVc'
 const Telegram = require('telegram-node-bot')
 const TelegramBaseController = Telegram.TelegramBaseController
 const TextCommand = Telegram.TextCommand
-const tg = new Telegram.Telegram(TOKEN, {
+global.tg = new Telegram.Telegram(TOKEN, {
 	workers: 1,
 	webAdmin: {
 		port: 1234,
@@ -38,45 +38,7 @@ global.ranks = {
 
 class OtherwiseController extends TelegramBaseController {
 	handle($) {
-		store.getData($, (data) => {
-			data.latest_urls = ['categories/Cars/Porsche/porsche_1.jpg', 'categories/Cars/Chevrolet/chevrolet_1.jpg']	// ЭМУЛЯЦИЯ
-
-			// мы просмотрели все картинки в категории, очистим массив
-			if (utils.getCountFilesInCategory(data.category) == data.latest_urls.length)
-				data.latest_urls = []
-
-			let items = utils.getRandomItems(data.category, data.latest_urls)
-			data.latest_urls.push(items[0])
-//			store.setLatestUrls($, data.latest_urls, () => {
-				let check_answer = (text, messageId) => {
-					let answer = text == items[1]
-					let score = data.score
-					score += answer ? 5 : -5
-					store.setScore($, score, () => {
-						let msg = ''
-						if (answer)
-							msg = 'Вы угадали! Ваш рейтинг: <b>' + score + '</b>'
-						else
-							msg = 'Вы не угадали. Ваш рейтинг: <b>' + score + '</b>'
-
-						msg += '\n<b>' + utils.getRankMsg(score) + '</b>'
-						tg.api.editMessageText(msg, {chat_id: $.chatId, message_id: messageId, parse_mode: 'HTML'}).then(() => {
-							console.log('HERE ITs MOTHEFUCKER BITCH NOT WORKS!!!!')
-							this.handle($)
-						})
-					})
-				}
-
-				$.sendPhoto({path: items[0]}).then(() => {
-					$.runInlineMenu({
-						layout: 2,
-						method: 'sendMessage',
-						params: [data.question],
-						menu: utils.genMenu(items, check_answer)
-					})
-				})
-//			})
-		})
+        require('./quiz').quiz($)
 	}
 }
 
