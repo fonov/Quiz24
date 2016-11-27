@@ -1,12 +1,11 @@
-/**
- * Created by csergey on 26.11.16.
- */
-
 'use strict'
 
-const TOKEN = '328061181:AAGql7NWJcrQ0Y81NaYLBuLqteVffD_RBVc';
+//////////////////////////////////////////////////////////
 
-require('string-template-likelua')
+const TOKEN = '328061181:AAGql7NWJcrQ0Y81NaYLBuLqteVffD_RBVc'
+
+//////////////////////////////////////////////////////////
+
 const Telegram = require('telegram-node-bot')
 const TelegramBaseController = Telegram.TelegramBaseController
 const TextCommand = Telegram.TextCommand
@@ -18,119 +17,119 @@ const tg = new Telegram.Telegram(TOKEN, {
 	}
 })
 
-const u = require('./u');
-const cars = u.getImgObject();
-const cars_array = Object.keys(cars);
+//////////////////////////////////////////////////////////
 
-const playscope = require('./playscope')
+require('./global_extensions')
+const utils = require('./utils')
+const store = require('./store')
+
+// TODO в зависимости от выбранной категории меняем ранги
+global.ranks = {
+	'Выброси телефон': -35,
+	'Удали телеграм': -30,
+	'Закрой бота': -25,
+	'Лузер': -20,
+	'Не эксперт': 0,
+	'Счастливый': 60,
+	'Эрик Давидович': 100
+}
+
+//////////////////////////////////////////////////////////
 
 class OtherwiseController extends TelegramBaseController {
 	handle($) {
-		playscope.init($)
+		store.getData($, (data) => {
+			data.latest_urls = ['categories/Cars/Porsche/porsche_1.jpg', 'categories/Cars/Chevrolet/chevrolet_1.jpg']	// ЭМУЛЯЦИЯ
 
-		let selected = [];
+			// мы просмотрели все картинки в категории, очистим массив
+			if (utils.getCountFilesInCategory(data.category) == data.latest_urls.length)
+				data.latest_urls = []
 
-		let model = cars_array[u.randomInt(0, cars_array.length - 1)];
-		let url = 'src/' + model + '/' + cars[model][u.randomInt(0, cars[model].length - 1)];
+			let items = utils.getRandomItems(data.category, data.latest_urls)
+			data.latest_urls.push(items[0])
+//			store.setLatestUrls($, data.latest_urls, () => {
+				let check_answer = (text, messageId) => {
+					let answer = text == items[1]
+					let score = data.score
+					score += answer ? 5 : -5
+					store.setScore($, score, () => {
+						let msg = ''
+						if (answer)
+							msg = 'Вы угадали! Ваш рейтинг: <b>' + score + '</b>'
+						else
+							msg = 'Вы не угадали. Ваш рейтинг: <b>' + score + '</b>'
 
-		selected.push(model);
-
-		let fake1 = u.ignore_duplicate(selected, cars_array);
-		selected.push(fake1);
-		let fake2 = u.ignore_duplicate(selected, cars_array);
-		selected.push(fake2);
-		let fake3 = u.ignore_duplicate(selected, cars_array);
-		selected.push(fake3);
-
-		console.log(model);
-		console.log(url);
-		console.log(fake1);
-		console.log(fake2);
-		console.log(fake3);
-		
-		var checkmark = (text, messageId) => {
-			var message = '';
-			var f = text == model
-			playscope.set($, f, (scope) => {
-				if(f){
-					message = 'Вы угадали! Ваш рейтинг: <b>'+scope+'</b>'
-				}else {
-					message = 'Вы не угадали. Ваш рейтинг: <b>'+scope+'</b>'
+						msg += '\n<b>' + utils.getRankMsg(score) + '</b>'
+						tg.api.editMessageText(msg, {chat_id: $.chatId, message_id: messageId, parse_mode: 'HTML'}).then(() => {
+							console.log('HERE ITs MOTHEFUCKER BITCH NOT WORKS!!!!')
+							this.handle($)
+						})
+					})
 				}
-				message += '\n<b>%s</b>'.format(require('./status')(scope))
-				tg.api.editMessageText(message, {
-					chat_id: $.chatId,
-					message_id: messageId,
-					parse_mode: 'HTML'
-				}).then(() => {
-					this.handle($)
+
+				$.sendPhoto({path: items[0]}).then(() => {
+					$.runInlineMenu({
+						layout: 2,
+						method: 'sendMessage',
+						params: [data.question],
+						menu: utils.genMenu(items, check_answer)
+					})
 				})
-			})
-		}
-
-
-				let menu = [
-					{
-						text: model,
-						callback: (callbackQuery, message) => {
-							checkmark(model, message.messageId)
-						}
-					},
-					{
-						text: fake1,
-						callback: (callbackQuery, message) => {
-							checkmark(fake1, message.messageId)
-						}
-					},
-					{
-						text: fake2,
-						callback: (callbackQuery, message) => {
-							checkmark(fake2, message.messageId)
-						}
-					},
-					{
-						text: fake3,
-						callback: (callbackQuery, message) => {
-							checkmark(fake3, message.messageId)
-						}
-					},
-				];
-
-
-
-			let inlineForm = {
-				layout: 2,
-				method: 'sendMessage',
-				params: ['Угадайте марку машины'],
-				menu: u.shuffle(menu)
-			}
-
-
-		$.sendPhoto({ path: url}).then(() => {
-			$.runInlineMenu(inlineForm)
+//			})
 		})
 	}
 }
 
 class PlayScopeController extends TelegramBaseController {
 
-    clear($) {
-        playscope.clear($)
-    }
+	clear($) {
+		//playscope.clear($)
+	}
 
-    stat($) {
-        playscope.stat($)
-    }
+	stat($) {
+		//playscope.stat($)
+	}
 
-    get routes() {
-        return {
-            'clearHandler': 'clear',
-            'statHandler': 'stat'
-        }
-    }
+	category($) {
+		$.runInlineMenu({
+			method: 'sendMessage',
+			params: ['Выберите категорию'],
+			menu: [
+				{
+					text: 'Автомобили',
+					callback: (callbackQuery, message) => {
+						store.setCategory('Cars', 'Угадайте марку машины')
+					}
+				},
+				{
+					text: 'Животные',
+					callback: (callbackQuery, message) => {
+						store.setCategory('Animals', 'Угадайте животное')
+					}
+				},
+				{
+					text: 'Фильмы',
+					callback: (callbackQuery, message) => {
+						store.setCategory('Movies', 'Угадайте сцену из фильма')
+					}
+				}
+			]
+		})
+	}
+
+	get routes() {
+		return {
+			'clearHandler': 'clear',
+			'statHandler': 'stat',
+			'categoryHandler': 'category'
+		}
+	}
 }
 
+//////////////////////////////////////////////////////////
+
 tg.router
-    .when(new TextCommand('/clear', 'clearHandler'), new PlayScopeController())
-    .when(new TextCommand('/stat', 'statHandler'), new PlayScopeController())
+	.when(new TextCommand('/clear', 'clearHandler'), new PlayScopeController())
+	.when(new TextCommand('/stat', 'statHandler'), new PlayScopeController())
+	.when(new TextCommand('/category', 'categoryHandler'), new PlayScopeController())
 	.otherwise(new OtherwiseController())
