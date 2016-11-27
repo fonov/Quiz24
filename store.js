@@ -2,9 +2,12 @@
 var getData = ($, callback) => {
 	$.getUserSession('params').then(data => {
 		if (isEmpty(data)) {
+            var category = ['Cars', 'Animals', 'Movies']
+            var question = ['Угадайте марку машины', 'Угадайте животное', 'Угадайте сцену из фильма']
+            var random = Math.randomInt(0, category.length-1)
 			data.score = 0
-			data.category = 'Cars'
-			data.question = 'Угадайте марку машины'
+			data.category = category[random]
+			data.question = question[random]
 			data.latest_urls = []
 
 			$.setUserSession('params', data).then(() => {
