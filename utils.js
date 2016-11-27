@@ -32,39 +32,27 @@ function initCategories() {
 function getRandomItems(category, latest_urls) {
 	var items = []
 	var keys = Object.keys(categories[category])
-
-	// состовляем карту картинок
-	var map_c = categories[category]
-
-
+	var limits = 0
 
 	while (items.length < 5) {
 		var item = keys[Math.randomInt(0, keys.length - 1)]
 
-		// если в map_c осталось меньше 4 наисенований то прерываем цикл
-
 		// first item
 		if (!items.length) {
 			var files = categories[category][item]
-			console.log(files)
 			var file = files[Math.randomInt(0, files.length - 1)]
-
-			console.log(category)
-			console.log(item)
-			console.log(file)
 
 			var url = 'categories/%s/%s/%s'.format(category, item, file)
 
 			if (latest_urls.indexOf(url) == -1)
 				items.push(url, item)
 			else{
-				// находи индекс
-				var index = map_c[item].indexOf(file)
-				console.log(index)
-				console.log(map_c[item])
-				// удалеем элимент из массив
-				map_c[item].splice(index, 1)
-				console.log(map_c[item])
+				limits++
+				// Кастыль ЕЕЕЕЕЕЕ!!
+				if(limits > 10000){
+					items = []
+					break
+				}
 
 			}
 		} else if (items.indexOf(item) == -1)

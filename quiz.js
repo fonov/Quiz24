@@ -12,12 +12,11 @@ var quiz = ($) => {
         ЭМУЛЯЦИЯ
         */
 
-        console.log(utils.getCountFilesInCategory(data.category))
-        console.log(data.latest_urls.length)
+        let items = utils.getRandomItems(data.category, data.latest_urls)
 
         //Отсылаем сообщение о том что все картинки просмотренны и не хотет ли чел попробывать себя в другой категории
-        if (utils.getCountFilesInCategory(data.category) == data.latest_urls.length)
-            $.sendMessage('<b>%s</b>, вы прошли всю категорию "%s". Попробуйте другие категории /category'.format($.message.from.firstName, data.question), {
+        if (!items.length)
+            return $.sendMessage('<b>%s</b>, вы прошли всю категорию "%s". Попробуйте другие категории /category'.format($.message.from.firstName, data.question), {
                 parse_mode: 'HTML'
             }).then(()=>{
                 // мы просмотрели все картинки в категории, очистим массив
@@ -25,7 +24,7 @@ var quiz = ($) => {
             })
 
 
-        let items = utils.getRandomItems(data.category, data.latest_urls)
+
         data.latest_urls.push(items[0])
 
 
