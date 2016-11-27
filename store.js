@@ -39,6 +39,7 @@ var setCategory = ($, category, question, callback) => {
 		if (!isEmpty(data)) {
 			data.category = category
 			data.question = question
+			data.latest_urls = []
 
 			$.setUserSession('params', data).then(callback)
 		}
