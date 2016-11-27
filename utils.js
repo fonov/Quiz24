@@ -30,22 +30,47 @@ function initCategories() {
 }
 
 function getRandomItems(category, latest_urls) {
-	let items = []
+	var items = []
+	var keys = Object.keys(categories[category])
 
-	let keys = Object.keys(categories[category])
+	// состовляем карту картинок
+	var map_c = categories[category]
+
+
+
 	while (items.length < 5) {
-		let item = keys[Math.randomInt(0, keys.length - 1)]
+		var item = keys[Math.randomInt(0, keys.length - 1)]
+
+		// если в map_c осталось меньше 4 наисенований то прерываем цикл
 
 		// first item
 		if (!items.length) {
-			let files = categories[category][item]
-			let url = 'categories/%s/%s/%s'.format(category, item, files[Math.randomInt(0, files.length - 1)])
+			var files = categories[category][item]
+			console.log(files)
+			var file = files[Math.randomInt(0, files.length - 1)]
+
+			console.log(category)
+			console.log(item)
+			console.log(file)
+
+			var url = 'categories/%s/%s/%s'.format(category, item, file)
 
 			if (latest_urls.indexOf(url) == -1)
 				items.push(url, item)
+			else{
+				// находи индекс
+				var index = map_c[item].indexOf(file)
+				console.log(index)
+				console.log(map_c[item])
+				// удалеем элимент из массив
+				map_c[item].splice(index, 1)
+				console.log(map_c[item])
+
+			}
 		} else if (items.indexOf(item) == -1)
 			items.push(item)
 	}
+
 
 	return items
 }
