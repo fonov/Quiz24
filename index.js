@@ -3,13 +3,14 @@
 //////////////////////////////////////////////////////////
 
 const TOKEN = '328061181:AAGql7NWJcrQ0Y81NaYLBuLqteVffD_RBVc'
+const SCORE_STEP = 2
 
 //////////////////////////////////////////////////////////
 
 const Telegram = require('telegram-node-bot')
 const TelegramBaseController = Telegram.TelegramBaseController
 const TextCommand = Telegram.TextCommand
-global.tg = new Telegram.Telegram(TOKEN, {
+const tg = new Telegram.Telegram(TOKEN, {
 	workers: 1,
 	webAdmin: {
 		port: 1234,
@@ -20,127 +21,153 @@ global.tg = new Telegram.Telegram(TOKEN, {
 //////////////////////////////////////////////////////////
 
 require('./global_extensions')
+const fs = require('fs')
 const utils = require('./utils')
 const store = require('./store')
 
-global.ranks = {
-    'Викторина явно не твоё': -25,
-    'Неспособный': -20,
-    'Лузер': -15,
-    'Неудачник': -10,
-    'Мимопроходящий': -5,
-	'Новичок': 0,
-    'Ученик': 5,
-    'Студент': 10,
-    'Умный': 15,
-    'Опытный': 20,
-    'Просвещенный': 25,
-    'Эрудит': 30,
-    'Анатолий Вассерман': 35,
-    'Профессор': 40,
-    'Гений': 45,
-    'Одаренный': 50,
-    'Мастер': 55,
-    'Ботаник': 60,
-    'Библиотекарь': 65,
-    'Эйнштейн': 70,
-    'Био Робот': 75,
-    'Искусственный интеллект': 80,
-    'Супер компьютер': 85,
-    'Король': 90,
-    'Победитель': 95,
-    'Любимчик фортуны': 100,
-    'Ковбой': 105,
-    'Счастливчик': 110,
-    'Наполеон': 115,
-    'Зазнайка': 120,
-    'Лев Толстой': 125,
-    'Вундеркинд': 130
-}
+utils.initCategories()
 
 //////////////////////////////////////////////////////////
 
 class OtherwiseController extends TelegramBaseController {
 	handle($) {
-        require('./quiz').quiz($)
+		store.validData($, (result) => {
+			if (result)
+				quiz($)
+			else
+				chooseCategory($)
+		})
 	}
 }
 
-class PlayScopeController extends TelegramBaseController {
-
-	clear($) {
-		//playscope.clear($)
-	}
-
-	stat($) {
-		//playscope.stat($)
-	}
-
-	category($) {
-        var setmess = 'Установлена категория - %s';
-		$.runInlineMenu({
-			method: 'sendMessage',
-			params: ['Выберите категорию'],
-			menu: [
-				{
-					text: 'Автомобили',
-					callback: (callbackQuery, message) => {
-                        var question = 'Угадайте марку машины'
-						store.setCategory($, 'Cars', question, () => {
-                            tg.api.editMessageText(setmess.format('Машины'), {
-                                chat_id: message.chat.id,
-                                message_id: message.messageId
-                            }).then(() => {
-                                require('./quiz').quiz($)
-                            })
-                        })
-					}
-				},
-				{
-					text: 'Животные',
-					callback: (callbackQuery, message) => {
-                        var question = 'Угадайте животное'
-                        store.setCategory($, 'Animals', question, () => {
-                            tg.api.editMessageText(setmess.format('Животные'), {
-                                chat_id: message.chat.id,
-                                message_id: message.messageId
-                            }).then(() => {
-                                require('./quiz').quiz($)
-                            })
-                        })
-					}
-				},
-				{
-					text: 'Фильмы',
-					callback: (callbackQuery, message) => {
-                        var question = 'Угадайте фильм';
-                            store.setCategory($, 'Movies', question, () => {
-                                tg.api.editMessageText(setmess.format('Фильмы'), {
-                                    chat_id: message.chat.id,
-                                    message_id: message.messageId
-                                }).then(() => {
-                                    require('./quiz').quiz($)
-                                })
-                            })
-					}
-				}
-			]
-		})
+class CategoryController extends TelegramBaseController {
+	categoryHandler($) {
+		chooseCategory($)
 	}
 
 	get routes() {
-		return {
-			'clearHandler': 'clear',
-			'statHandler': 'stat',
-			'categoryHandler': 'category'
-		}
+		return {'categoryCommand': 'categoryHandler'}
 	}
 }
 
 //////////////////////////////////////////////////////////
 
 tg.router
-	.when(new TextCommand('/clear', 'clearHandler'), new PlayScopeController())
-	.when(new TextCommand('/stat', 'statHandler'), new PlayScopeController())
-	.when(new TextCommand('/category', 'categoryHandler'), new PlayScopeController())
+	.when(new TextCommand('/category', 'categoryCommand'), new CategoryController())
 	.otherwise(new OtherwiseController())
+
+//////////////////////////////////////////////////////////
+
+function quiz($) {
+	store.getData($, (data) => {
+		let category = global.deepCopy(categories[data.category])
+		utils.excludeShownImages(category, data.shown_images)
+
+		if (utils.isEmptyCategory(category)) {
+			store.setData($, {shown_images: []}, (data) => {
+				completeCategory($, data)
+			})
+		} else {
+			let items = utils.getRandomItems(category, data.category)
+			data.shown_images.push(items[0])
+
+			store.setData($, {shown_images: data.shown_images}, (data) => {
+				let check_answer = (text, messageId) => {
+					let answer = text == items[2]
+					let score = data.score
+					score += answer ? SCORE_STEP : -SCORE_STEP
+
+					store.setData($, {score: score}, (data) => {
+						let msg = ''
+						if (answer)
+							msg = 'Ты угадал \uD83D\uDC4D Твой текущий рейтинг: <b>%d (%s)</b>.'
+						else
+							msg = 'К сожалению, ты не угадал \uD83D\uDE21 Твой текущий рейтинг: <b>%d (%s)</b>.'
+
+						tg.api.editMessageText(msg.format(score, utils.getRating(score)), {chat_id: $.chatId, message_id: messageId, parse_mode: 'HTML'}).then(() => {
+							quiz($)
+						})
+					})
+				}
+
+				$.sendPhoto({path: items[1]}).then(() => {
+					chooseAnswer($, data, items, check_answer)
+				})
+			})
+		}
+	})
+}
+
+function chooseCategory($) {
+	let menu = []
+
+	let categories = fs.readdirSync('categories')
+	for (let i in categories) {
+		let category_name = utils.getCategoryName(categories[i])
+
+		menu.push({
+			text: category_name,
+			callback: (callbackQuery, message) => {
+				store.setData($, {score: 0, category: categories[i], question: utils.getCategoryQuestion(categories[i]), shown_images: []}, (data) => {
+					let msg = 'Я установил категорию <b>%s</b>. Удачи!'
+					tg.api.editMessageText(msg.format(category_name), {chat_id: message.chat.id, message_id: message.messageId, parse_mode: 'HTML'}).then(() => {
+						quiz($)
+					})
+				})
+			}
+		})
+	}
+
+	$.runInlineMenu({
+		method: 'sendMessage',
+		params: ['Выбери категорию'],
+		menu: menu
+	})
+}
+
+function chooseAnswer($, data, items, check_func) {
+	let menu = []
+
+	for (let i = 2; i <= 5; i++) {
+		menu.push({
+			text: items[i],
+			callback: (callbackQuery, message) => {
+				check_func(items[i], message.messageId)
+			}
+		})
+	}
+
+	shuffle(menu)
+
+	$.runInlineMenu({
+		layout: 2,
+		method: 'sendMessage',
+		params: [data.question],
+		menu: menu
+	})
+}
+
+function completeCategory($, data) {
+	let msg = '<b>%s</b>, ты прошел всю категорию <b>%s</b>. Твой итоговый рейтинг: <b>%d (%s)</b>.'
+
+	$.runInlineMenu({
+		method: 'sendMessage',
+		params: [msg.format($.message.from.firstName, utils.getCategoryName(data.category), data.score, utils.getRating(data.score)), {parse_mode: 'HTML'}],
+		menu: [
+			{
+				text: 'Начать заново',
+				callback: (callbackQuery, message) => {
+					store.setData($, {score: 0}, (data) => {
+						quiz($)
+					})
+				}
+			},
+			{
+				text: 'Выбрать другую категорию',
+				callback: (callbackQuery, message) => {
+					chooseCategory($)
+				}
+			}
+		]
+	})
+}

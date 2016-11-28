@@ -1,83 +1,56 @@
+'use strict'
+
+const utils = require('./utils')
+
+var validData = ($, callback) => {
+	$.getUserSession('params').then(data => {
+		if (isEmpty(data)) {
+			// default params
+			data.score = 0
+			data.category = 'Cars'
+			data.question = utils.getCategoryQuestion(data.category)
+			data.shown_images = []
+
+			$.setUserSession('params', data).then(() => {
+				callback(false)
+			})
+		}
+		else
+			callback(true)
+	})
+}
 
 var getData = ($, callback) => {
 	$.getUserSession('params').then(data => {
-		if (isEmpty(data)) {
-            var category = ['Cars', 'Animals', 'Movies']
-            var question = ['Угадайте марку машины', 'Угадайте животное', 'Угадайте фильм']
-            var random = Math.randomInt(0, category.length-1)
-			data.score = 0
-			data.category = category[random]
-			data.question = question[random]
-			data.latest_urls = []
+		if (!isEmpty(data))
+			callback(data)
+		else
+			throw new Error('data is empty!')
+	})
+}
+
+var setData = ($, params, callback) => {
+	$.getUserSession('params').then(data => {
+		if (!isEmpty(data)) {
+			let keys = Object.keys(params)
+
+			for (let i in keys) {
+				let property = keys[i]
+				let value = params[property]
+
+				data[property] = value
+			}
 
 			$.setUserSession('params', data).then(() => {
 				callback(data)
 			})
-		}
-		// Пропустил условия когда сессия уже становленна
-		else {
-            callback(data)
-        }
-
+		} else
+			throw new Error('data is empty!')
 	})
 }
-
-var setScore = ($, score, callback) => {
-	$.getUserSession('params').then(data => {
-		if (!isEmpty(data)) {
-			data.score = score
-
-			$.setUserSession('params', data).then(callback)
-		}
-	})
-}
-
-var setLatestUrls = ($, latest_urls, callback) => {
-	$.getUserSession('params').then(data => {
-		if (!isEmpty(data)) {
-			data.latest_urls = latest_urls
-
-			$.setUserSession('params', data).then(callback)
-		}
-	})
-}
-
-var setCategory = ($, category, question, callback) => {
-    // Установка категории
-    // Я думаю рейтинг стоит обновлять так как для разных категорий разный рейтинг
-    var data = {
-        score: 0,
-        category: category,
-        question: question,
-        latest_urls: []
-    }
-    $.setUserSession('params', data).then(callback)
-}
-
-/*var clear = ($) => {
-	if($.message.text && $.message.text == '/clear')
-		$.sendMessage('Ваш игровой прогресс сброшен').then(() => {
-			$.setUserSession('plays', '0')
-		})
-}
-
-var stat = ($) => {
-	if($.message.text && $.message.text == '/stat'){
-		$.getUserSession('plays').then(data => {
-			if(isNaN(data))
-				data = 0
-			$.sendMessage('Ваш рейтинг: <b>'+data+'</b>\n<b>'+$.message.from.firstName+', вы - '+require('./status')(data).toLowerCase()+'</b>', {
-				parse_mode: 'HTML'
-			})
-		})
-	}
-}*/
 
 module.exports = {
+	validData,
 	getData,
-	setScore,
-	setLatestUrls,
-	setCategory,
-    //clear,
-    //stat
+	setData
 }

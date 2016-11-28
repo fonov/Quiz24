@@ -6,6 +6,8 @@
 */
 //////////////////////////////////////////////////////////
 
+'use strict'
+
 /*
  * Modification of standard function.
  * Examples:
@@ -26,9 +28,9 @@ Math.round = function(num, limit) {
  * an String.format API for string formatting.
  * It has to be set up using String.prototype.format = Format.format;
  * Usage:
- * "somestring %s %d".format('hello', 5);
+ * 'somestring %s %d'.format('hello', 5);
  * It supports %s, %d and %f, for %f it also support precisions like
- * "%.2f".format(1.526)
+ * '%.2f'.format(1.526)
 */
 
 String.prototype.format = function() {
@@ -65,8 +67,8 @@ String.prototype.format = function() {
 	});
 }
 
-Math.randomInt = function(low, high) {
-	return Math.floor(Math.random() * (high - low) + low)
+Math.randomInt = function(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 //Array.prototype.shuffle = function() {
@@ -92,3 +94,27 @@ global.shuffle = function(array) {
 global.isEmpty = function(obj) {
 	return !Object.keys(obj).length
 }
+
+global.copyObject = function(obj) {
+    var copy = {};
+    for (var key in obj) {
+        copy[key] = obj[key];
+    }
+    return copy;
+};
+
+global.deepCopy = function (obj) {
+    if (typeof obj != "object") {
+        return obj;
+    }
+    
+    var copy = obj.constructor();
+    for (var key in obj) {
+        if (typeof obj[key] == "object") {
+            copy[key] = this.deepCopy(obj[key]);
+        } else {
+            copy[key] = obj[key];
+        }
+    }
+    return copy;
+};
