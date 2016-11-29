@@ -110,6 +110,10 @@ function getCategoryName(category) {
 			return 'Животные'
 		case 'Movies':
 			return 'Фильмы'
+		case 'Аctress':
+			return 'Актрисы'
+		case 'Actors':
+			return 'Актеры'
 		default:
 			throw new Error('Unknown category: ' + category)
 	}
@@ -123,6 +127,10 @@ function getCategoryQuestion(category) {
 			return 'Угадай животное'
 		case 'Movies':
 			return 'Угадай фильм'
+        case 'Аctress':
+            return 'Угадай актрису'
+        case 'Actors':
+            return 'Угадай актера'
 		default:
 			throw new Error('Unknown category: ' + category)
 	}
