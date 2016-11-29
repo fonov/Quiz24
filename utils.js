@@ -32,6 +32,14 @@ function initCategories() {
 function getRandomItems(category, category_name) {
 	let items = []
 	let keys = Object.keys(category)
+	let keys_stored = keys.slice()
+
+	for (let i in keys) {
+		let item = keys[i]
+
+		if (!category[item].length)
+			keys.splice(i, 1)
+	}
 
 	while (items.length < 6) {
 		let item = keys[Math.randomInt(0, keys.length - 1)]
@@ -39,15 +47,18 @@ function getRandomItems(category, category_name) {
 		// first item
 		if (!items.length) {
 			let files = category[item]
-			if (!files.length)
-				continue
-
 			let file = files[Math.randomInt(0, files.length - 1)]
 			let url = 'categories/%s/%s/%s'.format(category_name, item, file.name)
 
 			items.push(file.id, url, item)
-		} else if (items.indexOf(item) == -1)
+
+			// restore
+			keys = keys_stored.slice()
+		} else
 			items.push(item)
+
+		// remove selected
+		keys.splice(keys.indexOf(item), 1)
 	}
 
 	return items
@@ -110,7 +121,7 @@ function getCategoryName(category) {
 			return 'Животные'
 		case 'Movies':
 			return 'Фильмы'
-		case 'Аctress':
+		case 'Actress':
 			return 'Актрисы'
 		case 'Actors':
 			return 'Актеры'
@@ -127,10 +138,10 @@ function getCategoryQuestion(category) {
 			return 'Угадай животное'
 		case 'Movies':
 			return 'Угадай фильм'
-        case 'Аctress':
-            return 'Угадай актрису'
-        case 'Actors':
-            return 'Угадай актера'
+		case 'Actress':
+			return 'Угадай актрису'
+		case 'Actors':
+			return 'Угадай актера'
 		default:
 			throw new Error('Unknown category: ' + category)
 	}
