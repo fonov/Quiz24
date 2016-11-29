@@ -102,13 +102,13 @@ function chooseCategory($) {
 	let menu = []
 
 	let categories = fs.readdirSync('categories')
-	for (let i in categories) {
-		let category_name = utils.getCategoryName(categories[i])
+	for (let category of categories) {
+		let category_name = utils.getCategoryName(category)
 
 		menu.push({
 			text: category_name,
 			callback: (callbackQuery, message) => {
-				store.setData($, {score: 0, category: categories[i], question: utils.getCategoryQuestion(categories[i]), shown_images: []}, (data) => {
+				store.setData($, {score: 0, category: category, question: utils.getCategoryQuestion(category), shown_images: []}, (data) => {
 					let msg = 'Я установил категорию <b>%s</b>. Удачи!'
 					tg.api.editMessageText(msg.format(category_name), {chat_id: message.chat.id, message_id: message.messageId, parse_mode: 'HTML'}).then(() => {
 						quiz($)

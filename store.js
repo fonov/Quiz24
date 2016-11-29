@@ -7,7 +7,7 @@ var validData = ($, callback) => {
 		if (isEmpty(data)) {
 			// default params
 			data.score = 0
-			data.category = 'Cars'
+			data.category = Object.keys(categories)[0]
 			data.question = utils.getCategoryQuestion(data.category)
 			data.shown_images = []
 
@@ -32,14 +32,10 @@ var getData = ($, callback) => {
 var setData = ($, params, callback) => {
 	$.getUserSession('params').then(data => {
 		if (!isEmpty(data)) {
-			let keys = Object.keys(params)
+			let properties = Object.keys(params)
 
-			for (let i in keys) {
-				let property = keys[i]
-				let value = params[property]
-
-				data[property] = value
-			}
+			for (let property of properties)
+				data[property] = params[property]
 
 			$.setUserSession('params', data).then(() => {
 				callback(data)

@@ -7,20 +7,20 @@ function initCategories() {
 	let obj = {}
 
 	let categories = fs.readdirSync('categories')
-	for (let i in categories) {
-		obj[categories[i]] = {}
+	for (let category of categories) {
+		obj[category] = {}
 
 		// items of category
-		let items = fs.readdirSync('categories/' + categories[i])
+		let items = fs.readdirSync('categories/' + category)
 
 		let id = 0
-		for (let j in items) {
-			obj[categories[i]][items[j]] = []
+		for (let item of items) {
+			obj[category][item] = []
 
 			// files of item
-			let files = fs.readdirSync('categories/' + categories[i] + '/' + items[j])
-			for (let l in files) {
-				obj[categories[i]][items[j]].push({id: id, name: files[l]})
+			let files = fs.readdirSync('categories/' + category + '/' + item)
+			for (let file of files) {
+				obj[category][item].push({id: id, name: file})
 				id++
 			}
 		}
@@ -54,24 +54,22 @@ function getRandomItems(category, category_name) {
 }
 
 function getRating(score) {
-	let keys = Object.keys(rating)
+	let ranks = Object.keys(rating)
 
-	for (let i in keys) {
-		let value = rating[keys[i]]
-
-		if (score <= value)
-			return keys[i]
+	for (let rank of ranks) {
+		if (score <= rating[rank])
+			return rank
 	}
 
-	return keys[keys.length - 1]
+	return ranks[ranks.length - 1]
 }
 
 function getCountFilesInCategory(category) {
 	let count = 0
 
 	let items = fs.readdirSync('categories/' + category)
-	for (let i in items) {
-		let files = fs.readdirSync('categories/' + category + '/' + items[i])
+	for (let item of items) {
+		let files = fs.readdirSync('categories/' + category + '/' + item)
 		count += files.length
 	}
 
@@ -94,12 +92,10 @@ function excludeShownImages(items, shown_images) {
 }
 
 function isEmptyCategory(category) {
-	let keys = Object.keys(category)
+	let items = Object.keys(category)
 
-	for (let i in keys) {
-		let item = category[keys[i]]
-
-		if (item.length)
+	for (let item of items) {
+		if (category[item].length)
 			return false
 	}
 
