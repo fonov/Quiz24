@@ -125,6 +125,8 @@ function getCategoryName(category) {
 			return 'Актрисы'
 		case 'Actors':
 			return 'Актеры'
+		case 'Flags':
+			return 'Флаги'
 		default:
 			throw new Error('Unknown category: ' + category)
 	}
@@ -142,6 +144,8 @@ function getCategoryQuestion(category) {
 			return 'Угадай актрису'
 		case 'Actors':
 			return 'Угадай актера'
+        case 'Flags':
+        	return 'Угадайте страну по флагу'
 		default:
 			throw new Error('Unknown category: ' + category)
 	}
