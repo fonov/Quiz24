@@ -5,6 +5,7 @@ const rating = require('./rating')
 
 function initCategories() {
 	let obj = {}
+	global.configs = {}
 
 	let categories = fs.readdirSync('categories')
 	for (let category of categories) {
@@ -15,6 +16,11 @@ function initCategories() {
 
 		let id = 0
 		for (let item of items) {
+			if (item == 'config.json') {
+				configs[category] = require('./categories/' + category + '/config')
+				continue
+			}
+
 			obj[category][item] = []
 
 			// files of item
@@ -34,6 +40,7 @@ function getRandomItems(category, category_name) {
 	let keys = Object.keys(category)
 	let keys_stored = keys.slice()
 
+	// remove empty items
 	for (let i in keys) {
 		let item = keys[i]
 
@@ -113,51 +120,11 @@ function isEmptyCategory(category) {
 	return true
 }
 
-function getCategoryName(category) {
-	switch (category) {
-		case 'Cars':
-			return 'Машины'
-		case 'Animals':
-			return 'Животные'
-		case 'Movies':
-			return 'Фильмы'
-		case 'Actress':
-			return 'Актрисы'
-		case 'Actors':
-			return 'Актеры'
-		case 'Flags':
-			return 'Флаги'
-		default:
-			throw new Error('Unknown category: ' + category)
-	}
-}
-
-function getCategoryQuestion(category) {
-	switch (category) {
-		case 'Cars':
-			return 'Угадай марку машины'
-		case 'Animals':
-			return 'Угадай животное'
-		case 'Movies':
-			return 'Угадай фильм'
-		case 'Actress':
-			return 'Угадай актрису'
-		case 'Actors':
-			return 'Угадай актера'
-        case 'Flags':
-        	return 'Угадайте страну по флагу'
-		default:
-			throw new Error('Unknown category: ' + category)
-	}
-}
-
 module.exports = {
 	initCategories,
 	getRandomItems,
 	getRating,
 	getCountFilesInCategory,
 	excludeShownImages,
-	isEmptyCategory,
-	getCategoryName,
-	getCategoryQuestion
+	isEmptyCategory
 }

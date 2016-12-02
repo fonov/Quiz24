@@ -103,14 +103,12 @@ function chooseCategory($) {
 
 	let categories = fs.readdirSync('categories')
 	for (let category of categories) {
-		let category_name = utils.getCategoryName(category)
-
 		menu.push({
-			text: category_name,
+			text: configs[category].name,
 			callback: (callbackQuery, message) => {
-				store.setData($, {score: 0, category: category, question: utils.getCategoryQuestion(category), shown_images: []}, (data) => {
+				store.setData($, {score: 0, category: category, question: configs[category].question, shown_images: []}, (data) => {
 					let msg = 'Я установил категорию <b>%s</b>. Удачи!'
-					tg.api.editMessageText(msg.format(category_name), {chat_id: message.chat.id, message_id: message.messageId, parse_mode: 'HTML'}).then(() => {
+					tg.api.editMessageText(msg.format(configs[category].name), {chat_id: message.chat.id, message_id: message.messageId, parse_mode: 'HTML'}).then(() => {
 						quiz($)
 					})
 				})
@@ -119,6 +117,7 @@ function chooseCategory($) {
 	}
 
 	$.runInlineMenu({
+		layout: 2,
 		method: 'sendMessage',
 		params: ['Выбери категорию'],
 		menu: menu
@@ -152,7 +151,7 @@ function completeCategory($, data) {
 
 	$.runInlineMenu({
 		method: 'sendMessage',
-		params: [msg.format($.message.from.firstName, utils.getCategoryName(data.category), data.score, utils.getRating(data.score)), {parse_mode: 'HTML'}],
+		params: [msg.format($.message.from.firstName, configs[data.category].name, data.score, utils.getRating(data.score)), {parse_mode: 'HTML'}],
 		menu: [
 			{
 				text: 'Начать заново',

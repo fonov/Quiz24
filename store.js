@@ -1,14 +1,12 @@
 'use strict'
 
-const utils = require('./utils')
-
 var validData = ($, callback) => {
 	$.getUserSession('params').then(data => {
 		if (isEmpty(data)) {
 			// default params
 			data.score = 0
 			data.category = Object.keys(categories)[0]
-			data.question = utils.getCategoryQuestion(data.category)
+			data.question = configs[data.category].question
 			data.shown_images = []
 
 			$.setUserSession('params', data).then(() => {
