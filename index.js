@@ -43,7 +43,9 @@ class OtherwiseController extends TelegramBaseController {
 
 class CategoryController extends TelegramBaseController {
 	categoryHandler($) {
-		chooseCategory($)
+		store.validData($, (result) => {
+			chooseCategory($)
+		})
 	}
 
 	get routes() {

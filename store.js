@@ -1,6 +1,6 @@
 'use strict'
 
-var validData = ($, callback) => {
+let validData = ($, callback) => {
 	$.getUserSession('params').then(data => {
 		if (isEmpty(data)) {
 			// default params
@@ -18,7 +18,7 @@ var validData = ($, callback) => {
 	})
 }
 
-var getData = ($, callback) => {
+let getData = ($, callback) => {
 	$.getUserSession('params').then(data => {
 		if (!isEmpty(data))
 			callback(data)
@@ -27,7 +27,7 @@ var getData = ($, callback) => {
 	})
 }
 
-var setData = ($, params, callback) => {
+let setData = ($, params, callback) => {
 	$.getUserSession('params').then(data => {
 		if (!isEmpty(data)) {
 			let properties = Object.keys(params)
