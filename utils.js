@@ -5,7 +5,6 @@ const rating = require('./rating')
 
 function initCategories() {
 	let obj = {}
-	global.configs = {}
 
 	let categories = fs.readdirSync('categories')
 	for (let category of categories) {
@@ -16,10 +15,8 @@ function initCategories() {
 
 		let id = 0
 		for (let item of items) {
-			if (item == 'config.json') {
-				configs[category] = require('./categories/' + category + '/config')
+			if (item == 'config.json')
 				continue
-			}
 
 			obj[category][item] = []
 
@@ -33,6 +30,20 @@ function initCategories() {
 	}
 
 	global.categories = obj
+}
+
+function initConfigs() {
+	global.configs = {}
+
+	let categories = fs.readdirSync('categories')
+	for (let category of categories) {
+		let items = fs.readdirSync('categories/' + category)
+
+		if (items.indexOf('config.json') != -1)
+			configs[category] = require('./categories/' + category + '/config')
+		else
+			throw new Error("category '" + category + "' doesn't have the config.json-file!")
+	}
 }
 
 function getRandomItems(category, category_name) {
@@ -122,6 +133,7 @@ function isEmptyCategory(category) {
 
 module.exports = {
 	initCategories,
+	initConfigs,
 	getRandomItems,
 	getRating,
 	getCountFilesInCategory,

@@ -26,6 +26,7 @@ const utils = require('./utils')
 const store = require('./store')
 
 utils.initCategories()
+utils.initConfigs()
 
 //////////////////////////////////////////////////////////
 
