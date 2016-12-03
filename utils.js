@@ -107,13 +107,20 @@ function excludeShownImages(items, shown_images) {
 	for (let i in shown_images) {
 		for (let j in items) {
 			let files = items[j]
+			let removed = false
 
 			for (let l in files) {
 				let file = files[l]
 
-				if (file.id == shown_images[i])
+				if (file.id == shown_images[i]) {
 					items[j].splice(l, 1)
+					removed = true
+					break
+				}
 			}
+
+			if (removed)
+				break
 		}
 	}
 }
