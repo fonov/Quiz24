@@ -23,15 +23,8 @@ function initCategories() {
 			// files of item
 			let files = fs.readdirSync('categories/' + category + '/' + item)
 			for (let file of files) {
-				let type_file = file.split('.')
-                type_file = type_file[type_file.length-1]
-				if(type_file.toLowerCase() == 'jpg' || type_file.toLowerCase() == 'jpeg' || type_file.toLowerCase() == 'gif' || type_file.toLowerCase() == 'png'  || type_file.toLowerCase() == 'tif' || type_file.toLowerCase() == 'bmp'){
-                    obj[category][item].push({id: id, name: file})
-                    id++
-				}else {
-					console.log('This file '+category+'/'+item+'/'+file+' is not photo!')
-					console.log()
-				}
+				obj[category][item].push({id: id, name: file})
+				id++
 			}
 		}
 	}
