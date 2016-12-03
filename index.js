@@ -11,7 +11,6 @@ const Telegram = require('telegram-node-bot')
 const TelegramBaseController = Telegram.TelegramBaseController
 const TextCommand = Telegram.TextCommand
 const tg = new Telegram.Telegram(TOKEN, {
-	workers: 1,
 	webAdmin: {
 		port: 1234,
 		host: 'localhost'
