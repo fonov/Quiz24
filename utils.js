@@ -46,38 +46,38 @@ function initConfigs() {
 	}
 }
 
-function getRandomItems(category, category_name) {
-	let items = []
-	let keys = Object.keys(category)
-	let keys_stored = keys.slice()
+function getRandomCollection(category, category_name) {
+	let collection = []
+	let items = Object.keys(category)
+	let items_stored = items.slice()
 
 	// remove empty items
-	for (let item of keys_stored) {
+	for (let item of items_stored) {
 		if (!category[item].length)
-			keys.splice(keys.indexOf(item), 1)
+			items.splice(items.indexOf(item), 1)
 	}
 
-	while (items.length < 6) {
-		let item = keys[Math.randomInt(0, keys.length - 1)]
+	while (collection.length < 6) {
+		let item = items[Math.randomInt(0, items.length - 1)]
 
 		// first item
-		if (!items.length) {
+		if (!collection.length) {
 			let files = category[item]
 			let file = files[Math.randomInt(0, files.length - 1)]
 			let url = 'categories/%s/%s/%s'.format(category_name, item, file.name)
 
-			items.push(file.id, url, item)
+			collection.push(file.id, url, item)
 
 			// restore
-			keys = keys_stored.slice()
+			items = items_stored.slice()
 		} else
-			items.push(item)
+			collection.push(item)
 
 		// remove selected
-		keys.splice(keys.indexOf(item), 1)
+		items.splice(items.indexOf(item), 1)
 	}
 
-	return items
+	return collection
 }
 
 function getRating(score) {
@@ -132,7 +132,7 @@ function isEmptyCategory(category) {
 module.exports = {
 	initCategories,
 	initConfigs,
-	getRandomItems,
+	getRandomCollection,
 	getRating,
 	getCountFilesInCategory,
 	excludeShownImages,

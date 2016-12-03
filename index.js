@@ -70,12 +70,12 @@ function quiz($) {
 				completeCategory($, data)
 			})
 		} else {
-			let items = utils.getRandomItems(category, data.category)
-			data.shown_images.push(items[0])
+			let collection = utils.getRandomCollection(category, data.category)
+			data.shown_images.push(collection[0])
 
 			store.setData($, {shown_images: data.shown_images}, (data) => {
 				let check_answer = (text, messageId) => {
-					let answer = text == items[2]
+					let answer = text == collection[2]
 					let score = data.score
 					score += answer ? SCORE_STEP : -SCORE_STEP
 
@@ -92,8 +92,8 @@ function quiz($) {
 					})
 				}
 
-				$.sendPhoto({path: items[1]}).then(() => {
-					chooseAnswer($, data, items, check_answer)
+				$.sendPhoto({path: collection[1]}).then(() => {
+					chooseAnswer($, data, collection, check_answer)
 				})
 			})
 		}
@@ -126,14 +126,14 @@ function chooseCategory($) {
 	})
 }
 
-function chooseAnswer($, data, items, check_func) {
+function chooseAnswer($, data, collection, check_func) {
 	let menu = []
 
 	for (let i = 2; i <= 5; i++) {
 		menu.push({
-			text: items[i],
+			text: collection[i],
 			callback: (callbackQuery, message) => {
-				check_func(items[i], message.messageId)
+				check_func(collection[i], message.messageId)
 			}
 		})
 	}
