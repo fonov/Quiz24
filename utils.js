@@ -52,11 +52,9 @@ function getRandomItems(category, category_name) {
 	let keys_stored = keys.slice()
 
 	// remove empty items
-	for (let i in keys) {
-		let item = keys[i]
-
+	for (let item of keys_stored) {
 		if (!category[item].length)
-			keys.splice(i, 1)
+			keys.splice(keys.indexOf(item), 1)
 	}
 
 	while (items.length < 6) {
