@@ -17,8 +17,7 @@
   },
   "homepage": "https://github.com/mounlion/Quiz24#readme",
   "dependencies": {
-    "mongodb": "^2.2.11",
-    "string-template-likelua": "^1.0.1",
+    "js-standard-library-extensions": "^1.0.1",
     "telegram-node-bot": "^4.0.4"
   }
 }
