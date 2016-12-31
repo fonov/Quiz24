@@ -19,7 +19,7 @@ const tg = new Telegram.Telegram(TOKEN, {
 
 //////////////////////////////////////////////////////////
 
-require('./global_extensions')
+require('js-standard-library-extensions')
 const fs = require('fs')
 const utils = require('./utils')
 const store = require('./store')
@@ -62,7 +62,7 @@ tg.router
 
 function quiz($) {
 	store.getData($, (data) => {
-		let category = global.deepCopy(categories[data.category])
+		let category = Object.copy(categories[data.category])
 		utils.excludeShownImages(category, data.shown_images)
 
 		if (utils.isEmptyCategory(category)) {
@@ -138,7 +138,7 @@ function chooseAnswer($, data, collection, check_func) {
 		})
 	}
 
-	shuffle(menu)
+	menu.shuffle()
 
 	$.runInlineMenu({
 		layout: 2,

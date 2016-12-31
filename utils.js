@@ -54,16 +54,16 @@ function getRandomCollection(category, category_name) {
 	// remove empty items
 	for (let item of items_stored) {
 		if (!category[item].length)
-			items.splice(items.indexOf(item), 1)
+			items.remove(item)
 	}
 
 	while (collection.length < 6) {
-		let item = items[Math.randomInt(0, items.length - 1)]
+		let item = items[Math.randomInt(items.length - 1)]
 
 		// first item
 		if (!collection.length) {
 			let files = category[item]
-			let file = files[Math.randomInt(0, files.length - 1)]
+			let file = files[Math.randomInt(files.length - 1)]
 			let url = 'categories/%s/%s/%s'.format(category_name, item, file.name)
 
 			collection.push(file.id, url, item)
@@ -74,7 +74,7 @@ function getRandomCollection(category, category_name) {
 			collection.push(item)
 
 		// remove selected
-		items.splice(items.indexOf(item), 1)
+		items.remove(item)
 	}
 
 	return collection

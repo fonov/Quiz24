@@ -2,7 +2,7 @@
 
 let validData = ($, callback) => {
 	$.getUserSession('params').then(data => {
-		if (isEmpty(data)) {
+		if (Object.isEmpty(data)) {
 			// default params
 			data.score = 0
 			data.category = Object.keys(categories)[0]
@@ -20,7 +20,7 @@ let validData = ($, callback) => {
 
 let getData = ($, callback) => {
 	$.getUserSession('params').then(data => {
-		if (!isEmpty(data))
+		if (!Object.isEmpty(data))
 			callback(data)
 		else
 			throw new Error('data is empty!')
@@ -29,7 +29,7 @@ let getData = ($, callback) => {
 
 let setData = ($, params, callback) => {
 	$.getUserSession('params').then(data => {
-		if (!isEmpty(data)) {
+		if (!Object.isEmpty(data)) {
 			let properties = Object.keys(params)
 
 			for (let property of properties)
